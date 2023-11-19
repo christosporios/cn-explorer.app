@@ -67,8 +67,8 @@ async function processFile(filePath: string, tableName: string, fromDate: Date, 
         RETURNING *, (xmax = 0) AS inserted;
         `;
 
-        //const result = await client.query(query, sqlValues);
-        addedCount += 0; //result.rows[0].inserted ? 1 : 0;
+        const result = await client.query(query, sqlValues);
+        addedCount += result.rows[0].inserted ? 1 : 0;
     }
 
     return addedCount;
@@ -88,7 +88,14 @@ const notesColumnMappings = {
     misleadingMissingImportantContext: 'misleading_missing_important_context',
     misleadingUnverifiedClaimAsFact: 'misleading_unverified_claim_as_fact',
     misleadingSatire: 'misleading_satire',
-    // ... continue for other columns
+    notMisleadingOther: 'not_misleading_other',
+    notMisleadingFactuallyCorrect: 'not_misleading_factually_correct',
+    notMisleadingOutdatedButNotWhenWritten: 'not_misleading_outdated_but_not_when_written',
+    notMisleadingClearlySatire: 'not_misleading_clearly_satire',
+    notMisleadingPersonalOpinion: 'not_misleading_personal_opinion',
+    trustowrthySource: 'trustworthy_sources',
+    summary: 'summary',
+    isMediaNote: 'is_media_note',
 };
 
 const ratingsColumnMappings = {

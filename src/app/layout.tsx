@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { lastRatingDateMem } from './utils'
-import { lastRatingDate } from './db'
+import { lastRatingDateLimited } from './utils'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,7 +16,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
 
-  const lastContribution = await lastRatingDate();
+  const lastContribution = await lastRatingDateLimited();
   const lastContributionDateStr = lastContribution.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
@@ -26,7 +25,7 @@ export default async function RootLayout({
         <header className="flex justify-center items-start h-8 mb-8 border-b-slate-100 border-2 ">
           <h1 className="text-lg">Community Notes Data Explorer</h1>
         </header>
-        <main>
+        <main className="container mx-auto px-4 py-2">
         {children}
         </main>
         <footer className="text-xs text-center mt-8">

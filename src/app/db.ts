@@ -20,7 +20,17 @@ const pool = new Pool({
 export async function lastRatingDate() {
     const result = await pool.query('SELECT MAX(created_at_millis) FROM ratings');
     const lastDate = parseInt(result.rows[0].max);
-    console.log('lastRatingDate', lastDate);
 
     return new Date(lastDate);
+}
+
+export async function countRatings() {
+    const result = await pool.query('SELECT COUNT(*) FROM ratings');
+    console.log("foo");
+    return parseInt(result.rows[0].count);
+}
+
+export async function notesForTweetId(tweetId: string) {
+    const result = await pool.query('SELECT * FROM notes WHERE tweet_id = $1', [tweetId]);
+    return result.rows;
 }
