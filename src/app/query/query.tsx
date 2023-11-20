@@ -3,6 +3,7 @@ import { notesForTweetId } from "../db";
 
 export type QueryResults = {
   type: "notes-list",
+  tweetId: string,
   notes: Array<any>
 } | {
   type: "error",
@@ -34,6 +35,7 @@ export async function runQuery(query: string) : Promise<QueryResults> {
     if (tweetId) {
         return {
             type: "notes-list",
+            tweetId,
             notes: await notesForTweetId(tweetId)
         }
     } else {

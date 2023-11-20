@@ -23,7 +23,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className="h-screen bg-white">
         <header className="flex justify-center items-start h-8 mb-8 border-b-slate-100 border-2 ">
-          <h1 className="text-lg">Community Notes Data Explorer</h1>
+          <h1 className="text-lg"><a href='/'>Community Notes Data Explorer</a></h1>
         </header>
         <main className="container mx-auto px-4 py-2">
         {children}

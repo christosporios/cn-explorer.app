@@ -15,10 +15,10 @@ export default function Examples(props : ExamplesProps) {
     }
 
     const examples = [
-        { query: "1719588959163224087", description: "Shows community notes for a tweet ID", icon: ChatIcon },
-        { query: "Time chart of ratings submitted", description: "Shows a time chart of ratings submitted", icon: ChartBarIcon },
-        { query: "Most recent notes", description: "Shows a table of the most recently submitted notes", icon: TableIcon },
-        { query: "Contributors with the most ratings in the last 30 days", description: "Shows a table of the contributors with the most ratings in the last 30 days", icon: TableIcon },
+        { query: "1671370284102819841", description: "Shows community notes for a tweet ID", icon: ChatIcon },
+        { query: "Time chart of ratings submitted", description: "Shows a time chart of community note ratings submitted", icon: ChartBarIcon },
+        { query: "Most recent notes", description: "Shows a table of the most recently submitted community notes", icon: TableIcon },
+        { query: "Contributors with the most ratings in the last 30 days", description: "Shows a table of the contributors with the most community note ratings in the last 30 days", icon: TableIcon },
     ];
 
     return <div>

@@ -106,6 +106,7 @@ const ratingsColumnMappings = {
     agree: 'agree',
     disagree: 'disagree',
     // ... skipping deprecated columns
+    helpfulnessLevel: 'helpfulness_level',
     helpfulOther: 'helpful_other',
     helpfulClear: 'helpful_clear',
     helpfulGoodSources: 'helpful_good_sources',
