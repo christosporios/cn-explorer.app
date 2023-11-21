@@ -22,7 +22,7 @@ export default async function Results(props : ResultsProps) {
         console.log("notes-list");
         return <>
             <div className="flex space-x-2 space-y-2 align-top">
-                <div className="basis-3/4 shrink-0 grow-0 pt-6 relative">
+                <div className="basis-3/4 shrink-0 grow-0 pt-8 relative">
                     {renderNotes(props.results.notes)}
                 </div>
                 <div className="basis-1/4 shrink-0 grow-0 relative">

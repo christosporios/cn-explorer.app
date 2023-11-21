@@ -34,3 +34,5 @@ export async function notesForTweetId(tweetId: string) {
     const result = await pool.query('SELECT * FROM notes_with_stats WHERE tweet_id = $1', [tweetId]);
     return result.rows;
 }
+
+expor

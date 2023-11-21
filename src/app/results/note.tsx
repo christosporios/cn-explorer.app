@@ -43,8 +43,8 @@ export default function Note({data} : {data: any}) {
             "ratings": parseInt(data.ratings_count_somewhat_helpful)
         }
     ];
-    return <Card className="hover:cursor-pointer hover:bg-slate-50 my-4 "> 
-        <div className="my-2 flex flex-row h-fit">
+    return <Card className="hover:cursor-pointer hover:bg-slate-50 mb-8 "> 
+        <div className="flex flex-row h-fit">
             <div className="basis-1/4 grow-0 shrink-0 relative">
                 <Title>Ratings</Title>
                 <DonutChart data={ratingData} index="name" category="ratings" colors={["green", "red", "blue"]}/>

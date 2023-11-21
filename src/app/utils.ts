@@ -11,11 +11,9 @@ const rateLimiter = (func: () => any, limitInSeconds: number) => {
         const now = Date.now();
 
         if (!lastRan || (now - lastRan) >= limit) {
-            console.log("running");
             lastRan = now;
             lastResult = func();
         } else {
-            console.log("cached");
         }
 
         return lastResult;
