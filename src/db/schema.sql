@@ -101,3 +101,16 @@ LEFT JOIN
     ratings r ON n.note_id = r.note_id
 GROUP BY 
     n.note_id;
+
+
+CREATE INDEX idx_ratings_note_id ON ratings(note_id);
+CREATE INDEX idx_notes_with_stats_note_id ON notes_with_stats(note_id);
+
+CREATE INDEX idx_ratings_created_at_millis ON ratings(created_at_millis);
+CREATE INDEX idx_notes_with_stats_created_at_millis ON notes_with_stats(created_at_millis);
+
+CREATE INDEX idx_ratings_helpfulness_level ON ratings(helpfulness_level);
+CREATE INDEX idx_notes_with_stats_classification ON notes_with_stats(classification);
+
+CREATE INDEX idx_ratings_rating_participant_id ON ratings(rating_participant_id);
+CREATE INDEX idx_notes_with_stats_note_author_participant_id ON notes_with_stats(note_author_participant_id);

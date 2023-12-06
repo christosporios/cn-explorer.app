@@ -6,9 +6,9 @@ import { Suspense, startTransition, use, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Examples from './examples';
 import Results from './results/results';
-import { type QueryResults } from './query/query';
+import { type QueryResults } from './api/search';
 import { countRatings } from './db';
-import { runQuery } from './query/query';
+import { runQuery } from './api/search';
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -54,7 +54,7 @@ export default function Home() {
         value={query}
         className="w-12/12"
         icon={SearchIcon}
-        placeholder="Enter a tweet ID or URL, a contributor ID, or a plain text query"
+        placeholder="Enter a tweet ID or URL, a user ID, or a plain text query"
         onChange={onQueryUpdate}
       />
       </form>

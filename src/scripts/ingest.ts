@@ -11,8 +11,8 @@ dotenv.config();
 const client = new Client({
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+    user: process.env.DB_WRITER_USER,
+    password: process.env.DB_READER_PASSWORD,
     database: process.env.DB_DATABASE,
     ssl: {
         rejectUnauthorized: false
@@ -212,10 +212,15 @@ async function main() {
     const toDate = new Date(process.argv[3]);
 
     try {
+        const outputs = new Map<string, string>();
         for (const file of files) {
             console.log(`Downloading ${file.url}...`)
             const outputPath = './tmp/' + file.url.split('/').pop();
             await downloadFile(file.url, outputPath);
+            outputs.set(file.url, outputPath);
+        }
+        for (const file of files) {
+            const outputPath = outputs.get(file.url)!;
             const addedCount = await processFile(outputPath, file.table, fromDate, toDate, file.columnMappings, file.keys);
             console.log(`Added ${addedCount} new rows to ${file.table}`);
         }
