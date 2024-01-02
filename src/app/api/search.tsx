@@ -41,6 +41,7 @@ function extractTweetId(query: string): string | null {
 async function smartQuery(query: string): Promise<QueryResults> {
   try {
     var sqlQuery = await generateSqlQuery(query);
+    console.log(`Generated SQL query: ${sqlQuery}`)
   } catch (e) {
     console.log(e);
     return {

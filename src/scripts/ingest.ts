@@ -12,7 +12,7 @@ const client = new Client({
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT || '5432', 10),
     user: process.env.DB_WRITER_USER,
-    password: process.env.DB_READER_PASSWORD,
+    password: process.env.DB_WRITER_PASSWORD,
     database: process.env.DB_DATABASE,
     ssl: {
         rejectUnauthorized: false

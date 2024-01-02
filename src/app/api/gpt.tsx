@@ -116,6 +116,7 @@ export async function generateSqlQuery(textQuery : string) : Promise<string> {
         systemPrompt,
         userPrompt: textQuery
     });
+    console.log(`llm response: ${response}`)
 
     if (response?.startsWith("Error:")) {
         throw new Error(response);
