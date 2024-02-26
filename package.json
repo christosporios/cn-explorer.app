@@ -26,7 +26,10 @@
     "react": "^18",
     "react-dom": "^18",
     "react-error-boundary": "^4.0.11",
-    "react-tweet": "^3.1.1"
+    "react-tweet": "^3.1.1",
+    "@trigger.dev/sdk": "^2.3.18",
+    "@trigger.dev/nextjs": "^2.3.18",
+    "@trigger.dev/react": "^2.3.18"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -38,5 +41,8 @@
     "ts-node": "^10.9.1",
     "tsx": "^4.1.2",
     "typescript": "^5"
+  },
+  "trigger.dev": {
+    "endpointId": "cn-explorer-Enuc"
   }
 }
