@@ -11,8 +11,8 @@ dotenv.config();
 const client = new Client({
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+    user: process.env.DB_WRITER_USER,
+    password: process.env.DB_WRITER_PASSWORD,
     database: process.env.DB_DATABASE,
     ssl: {
         rejectUnauthorized: false
@@ -67,8 +67,8 @@ async function processFile(filePath: string, tableName: string, fromDate: Date, 
         RETURNING *, (xmax = 0) AS inserted;
         `;
 
-        //const result = await client.query(query, sqlValues);
-        addedCount += 0; //result.rows[0].inserted ? 1 : 0;
+        const result = await client.query(query, sqlValues);
+        addedCount += result.rows[0].inserted ? 1 : 0;
     }
 
     return addedCount;
@@ -88,7 +88,14 @@ const notesColumnMappings = {
     misleadingMissingImportantContext: 'misleading_missing_important_context',
     misleadingUnverifiedClaimAsFact: 'misleading_unverified_claim_as_fact',
     misleadingSatire: 'misleading_satire',
-    // ... continue for other columns
+    notMisleadingOther: 'not_misleading_other',
+    notMisleadingFactuallyCorrect: 'not_misleading_factually_correct',
+    notMisleadingOutdatedButNotWhenWritten: 'not_misleading_outdated_but_not_when_written',
+    notMisleadingClearlySatire: 'not_misleading_clearly_satire',
+    notMisleadingPersonalOpinion: 'not_misleading_personal_opinion',
+    trustowrthySource: 'trustworthy_sources',
+    summary: 'summary',
+    isMediaNote: 'is_media_note',
 };
 
 const ratingsColumnMappings = {
@@ -99,6 +106,7 @@ const ratingsColumnMappings = {
     agree: 'agree',
     disagree: 'disagree',
     // ... skipping deprecated columns
+    helpfulnessLevel: 'helpfulness_level',
     helpfulOther: 'helpful_other',
     helpfulClear: 'helpful_clear',
     helpfulGoodSources: 'helpful_good_sources',
@@ -204,10 +212,15 @@ async function main() {
     const toDate = new Date(process.argv[3]);
 
     try {
+        const outputs = new Map<string, string>();
         for (const file of files) {
             console.log(`Downloading ${file.url}...`)
             const outputPath = './tmp/' + file.url.split('/').pop();
             await downloadFile(file.url, outputPath);
+            outputs.set(file.url, outputPath);
+        }
+        for (const file of files) {
+            const outputPath = outputs.get(file.url)!;
             const addedCount = await processFile(outputPath, file.table, fromDate, toDate, file.columnMappings, file.keys);
             console.log(`Added ${addedCount} new rows to ${file.table}`);
         }

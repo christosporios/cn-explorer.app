@@ -80,3 +80,37 @@ CREATE TABLE ratings (
     rated_on_tweet_id BIGINT,
     PRIMARY KEY (note_id, rating_participant_id)
 );
+
+DROP MATERIALIZED VIEW IF EXISTS notes_with_stats;
+
+CREATE MATERIALIZED VIEW notes_with_stats AS
+SELECT 
+    n.note_id,
+    n.note_author_participant_id,
+    n.created_at_millis,
+    n.tweet_id,
+    n.summary,
+    n.classification,
+    COUNT(r.note_id) AS ratings_count,
+    COUNT(CASE WHEN r.helpfulness_level = 'HELPFUL' THEN 1 END) AS ratings_count_helpful,
+    COUNT(CASE WHEN r.helpfulness_level = 'SOMEWHAT_HELPFUL' THEN 1 END) AS ratings_count_somewhat_helpful,
+    COUNT(CASE WHEN r.helpfulness_level = 'NOT_HELPFUL' THEN 1 END) AS ratings_count_not_helpful
+FROM 
+    notes n
+LEFT JOIN 
+    ratings r ON n.note_id = r.note_id
+GROUP BY 
+    n.note_id;
+
+
+CREATE INDEX idx_ratings_note_id ON ratings(note_id);
+CREATE INDEX idx_notes_with_stats_note_id ON notes_with_stats(note_id);
+
+CREATE INDEX idx_ratings_created_at_millis ON ratings(created_at_millis);
+CREATE INDEX idx_notes_with_stats_created_at_millis ON notes_with_stats(created_at_millis);
+
+CREATE INDEX idx_ratings_helpfulness_level ON ratings(helpfulness_level);
+CREATE INDEX idx_notes_with_stats_classification ON notes_with_stats(classification);
+
+CREATE INDEX idx_ratings_rating_participant_id ON ratings(rating_participant_id);
+CREATE INDEX idx_notes_with_stats_note_author_participant_id ON notes_with_stats(note_author_participant_id);
