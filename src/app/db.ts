@@ -26,7 +26,6 @@ export async function lastRatingDate() {
 
 export async function countRatings() {
   const result = await pool.query('SELECT COUNT(*) FROM ratings');
-  console.log("foo");
   return parseInt(result.rows[0].count);
 }
 

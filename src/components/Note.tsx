@@ -33,7 +33,6 @@ const formatUserId = (id : string) => {
 }
 
 export default function Note({data} : {data: any }) {
-    console.log(data);
     const ratingData = [
         {
             "name": "Helpful",

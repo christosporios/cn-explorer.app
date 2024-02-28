@@ -42,7 +42,6 @@ export default async function Results(props : ResultsProps) {
         return <UserProfile id={props.results.userId} />;
     } else if (props.results.type === "table") {
         console.log("table");
-        console.log(props.results);
         return <GenericTable data={props.results.results} />;
     }
     return <>

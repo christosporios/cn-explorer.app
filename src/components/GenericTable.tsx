@@ -3,10 +3,6 @@ import { Table, TableBody, TableHead, TableHeaderCell, TableRow, Title } from "@
 export default function Note({data} : {data: any[] }) {
     const cols : string[] = Object.keys(data[0]);
     console.log("GenericTable")
-    console.log(cols);
-    console.log(data);
-
-
     return <Table>
         <Title>Results</Title>
 

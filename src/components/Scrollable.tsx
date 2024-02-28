@@ -17,7 +17,6 @@ export default function Scrollable<T>({itemComponent, batchGetter}
         console.log("Getting initial items")
         batchGetter(0).then((newItems) => {
             console.log(`Got ${newItems.length} items`)
-            console.log(newItems);
             setItems(newItems);
             setLoading(false);
         });

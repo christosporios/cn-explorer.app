@@ -18,10 +18,12 @@ export default function Home() {
   const q = searchParams.get("q") as string;
 
   useEffect(() => {
-    if (q) {
       setQuery(q);
+    if (q) {
       makeQuery(q);
     }
+    console.log("New query: ", q);
+    setResults(null);
   }, [q]);
 
   const handleSubmit = (e : any) => {
@@ -30,9 +32,7 @@ export default function Home() {
   }
 
   const onQueryUpdate = (e : any) => {
-    startTransition(() => {
-      setQuery(e.target.value);
-    });
+    setQuery(e.target.value);
   }
 
   const makeQuery = (query : string) => {
