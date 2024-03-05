@@ -1,4 +1,5 @@
 
+"use server";
 import { notesForTweetId, queryDatabase } from "../db";
 import { generateSqlQuery } from "./gpt";
 
@@ -85,6 +86,7 @@ async function smartQuery(query: string): Promise<QueryResults> {
 export async function runQuery(query: string) : Promise<QueryResults> {
     query = query.trim();
     const tweetId = extractTweetId(query);
+    console.log(`Query: ${query}`)
 
     if (tweetId) {
       return {

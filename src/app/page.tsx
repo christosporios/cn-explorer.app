@@ -45,7 +45,11 @@ export default function Home() {
     console.log(`Querying for ${query}`);
     if (query) {
       router.push(`/?q=${query}`);
-      runQuery(query).then(setResults);
+      runQuery(query).then((results) => {
+        console.log("Query complete");
+        console.log(results);
+        setResults(results);
+      });
     } else {
       router.push(`/`);
       setResults(null);

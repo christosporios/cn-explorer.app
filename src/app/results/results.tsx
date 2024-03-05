@@ -20,6 +20,7 @@ export default function Results(props : ResultsProps) {
 
     if (props.results.type === "notes-list") {
         console.log("notes-list");
+        console.log(props.results);
         return <>
             <div className="flex space-x-2 space-y-2 align-top">
                 <div className="basis-3/4 shrink-0 grow-0 pt-8 relative">
