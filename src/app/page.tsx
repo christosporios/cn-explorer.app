@@ -18,12 +18,18 @@ export default function Home() {
   const q = searchParams.get("q") as string;
 
   useEffect(() => {
-      setQuery(q);
-    if (q) {
-      makeQuery(q);
-    }
+    if (q === query) return;
+
     console.log("New query: ", q);
-    setResults(null);
+    makeQuery(q);
+
+    if (q) {
+      setQuery(q);
+    }
+
+    if (q === null) {
+      setQuery("");
+    }
   }, [q]);
 
   const handleSubmit = (e : any) => {

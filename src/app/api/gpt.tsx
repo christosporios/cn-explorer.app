@@ -1,7 +1,7 @@
 "use server";
 import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY || "" });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || "" });
 
 const dbDescription = `
         CREATE TABLE ratings (
@@ -75,6 +75,9 @@ const systemPrompt = `
 
     Query: Ratings on notes containing the word "vaccine"
     Response: SELECT * FROM ratings WHERE note_id IN (SELECT note_id FROM notes WHERE summary LIKE '%vaccine%') ORDER BY created_at_millis DESC LIMIT ${maxRows};
+
+    Query: Notes with the most ratings
+    Response: SELECT * FROM notes_with_stats ORDER BY ratings_count DESC LIMIT ${maxRows};
 
     Query: Users with the most ratings
     Response: SELECT rating_participant_id, COUNT(*) AS ratings_count FROM ratings GROUP BY rating_participant_id ORDER BY ratings_count DESC LIMIT ${maxRows};
