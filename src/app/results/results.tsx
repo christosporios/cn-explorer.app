@@ -10,7 +10,7 @@ type ResultsProps = {
     results: QueryResults;
 }
 
-export default async function Results(props : ResultsProps) {
+export default function Results(props : ResultsProps) {
     const renderNotes = (notes : Array<any>) => {
         if (notes.length === 0) {
             return <p className="text-center">No notes found.</p>

@@ -12,7 +12,7 @@ import { runQuery } from './api/search';
 
 export default function Home() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Promise<QueryResults> | null>(null);
+  const [results, setResults] = useState<QueryResults | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const q = searchParams.get("q") as string;
@@ -45,7 +45,7 @@ export default function Home() {
     console.log(`Querying for ${query}`);
     if (query) {
       router.push(`/?q=${query}`);
-      setResults(runQuery(query));
+      runQuery(query).then(setResults);
     } else {
       router.push(`/`);
       setResults(null);
@@ -67,7 +67,7 @@ export default function Home() {
     </div>
 
     {results
-      ? <Suspense fallback={<p>loading</p>}> <Results results={use(results)}/> </Suspense>
+      ? <Results results={results}/>
       : <Examples onExampleClick={makeQuery} />
     }
   </>);

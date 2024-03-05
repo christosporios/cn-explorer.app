@@ -7,6 +7,7 @@ import Scrollable from "@/components/Scrollable";
 
 
 export default function UserProfile({ id } : {id: string}) {
+    console.log(`User profile ${id}`);
     return <>
         <Title>Participant {id}</Title>
         <TabGroup>

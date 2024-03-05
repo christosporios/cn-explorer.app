@@ -1,4 +1,3 @@
-'use server';
 import { lastRatingDate } from './db';
 
 const rateLimiter = (func: () => any, limitInSeconds: number) => {
