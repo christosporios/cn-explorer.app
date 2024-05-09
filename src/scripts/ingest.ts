@@ -346,6 +346,30 @@ const files = [
         columnMappings: ratingsColumnMappings
     },
     {
+        url: baseUrl + 'ratings-00004.tsv',
+        table: 'ratings',
+        keys: ['note_id', 'rating_participant_id'],
+        columnMappings: ratingsColumnMappings
+    },
+    {
+        url: baseUrl + 'ratings-00005.tsv',
+        table: 'ratings',
+        keys: ['note_id', 'rating_participant_id'],
+        columnMappings: ratingsColumnMappings
+    },
+    {
+        url: baseUrl + 'ratings-00006.tsv',
+        table: 'ratings',
+        keys: ['note_id', 'rating_participant_id'],
+        columnMappings: ratingsColumnMappings
+    },
+    {
+        url: baseUrl + 'ratings-00007.tsv',
+        table: 'ratings',
+        keys: ['note_id', 'rating_participant_id'],
+        columnMappings: ratingsColumnMappings
+    },
+    {
         url: baseUrl + 'noteStatusHistory-00000.tsv',
         table: 'note_status',
         keys: ['note_id'],
@@ -358,13 +382,13 @@ const files = [
         columnMappings: userEnrollmentColumnMappings
     },
     {
-        url: baseUrl + 'scored-notes.tsv',
+        url: baseUrl + 'scored_notes.tsv',
         table: 'scored_notes',
         keys: ['note_id'],
         columnMappings: scoredNotesColumnMappings
     },
     {
-        url: baseUrl + 'helpfulness-scores.tsv',
+        url: baseUrl + 'helpfulness_scores.tsv',
         table: 'helpfulness_scores',
         keys: ['rater_participant_id'],
         columnMappings: helpfulnessScoresColumnMappings
