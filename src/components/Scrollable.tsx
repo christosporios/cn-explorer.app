@@ -4,10 +4,10 @@ import Note from "./Note";
 import { Button } from "@tremor/react";
 import ReactErrorBoundary from "react-error-boundary";
 
-export default function Scrollable<T>({itemComponent, batchGetter} 
+export default function Scrollable<T>({ itemComponent, batchGetter }
     : {
-        itemComponent: (params : {data : T}) => JSX.Element, 
-        batchGetter: (page : number) => Promise<Array<T>>
+        itemComponent: (params: { data: T }) => JSX.Element,
+        batchGetter: (page: number) => Promise<Array<T>>
     }) {
     const [items, setItems] = useState<Array<T>>([]);
     const [loading, setLoading] = useState(true);
@@ -20,9 +20,9 @@ export default function Scrollable<T>({itemComponent, batchGetter}
             setItems(newItems);
             setLoading(false);
         });
-    }, []);
+    }, [batchGetter]);
 
-    const handleMore = (e : any) => {
+    const handleMore = (e: any) => {
         if (loading) {
             return;
         }
@@ -45,12 +45,12 @@ export default function Scrollable<T>({itemComponent, batchGetter}
     }
 
     return (<>
-            {items.map((item, ind) => {
-                return <div key={`item-${ind}`}>
-                    {itemComponent({data: item})}
-                </div>
-            })}
-            <Button onClick={handleMore} disabled={allDone || loading} className="w-full">{buttonText}</Button>
+        {items.map((item, ind) => {
+            return <div key={`item-${ind}`}>
+                {itemComponent({ data: item })}
+            </div>
+        })}
+        <Button onClick={handleMore} disabled={allDone || loading} className="w-full">{buttonText}</Button>
     </>);
 
 }

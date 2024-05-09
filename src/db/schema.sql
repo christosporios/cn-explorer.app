@@ -54,6 +54,8 @@ CREATE TABLE user_enrollment (
     modeling_group TEXT
 );
 
+ALTER TABLE user_enrollment ADD COLUMN number_of_times_earned_out INTEGER;
+
 CREATE TABLE ratings (
     note_id BIGINT,
     rating_participant_id TEXT,
@@ -81,6 +83,90 @@ CREATE TABLE ratings (
     PRIMARY KEY (note_id, rating_participant_id)
 );
 
+-- Scored Notes Table
+CREATE TABLE scored_notes (
+    note_id TEXT PRIMARY KEY,
+    core_note_intercept REAL,
+    core_note_factor1 REAL,
+    final_rating_status TEXT,
+    first_tag TEXT,
+    second_tag TEXT,
+    core_active_rules TEXT,
+    active_filter_tags TEXT,
+    classification TEXT,
+    created_at_millis BIGINT,
+    core_rating_status TEXT,
+    meta_scorer_active_rules TEXT,
+    decided_by TEXT,
+    expansion_note_intercept REAL,
+    expansion_note_factor1 REAL,
+    expansion_rating_status TEXT,
+    coverage_note_intercept REAL,
+    coverage_note_factor1 REAL,
+    coverage_rating_status TEXT,
+    core_note_intercept_min REAL,
+    core_note_intercept_max REAL,
+    expansion_note_intercept_min REAL,
+    expansion_note_intercept_max REAL,
+    coverage_note_intercept_min REAL,
+    coverage_note_intercept_max REAL,
+    group_note_intercept REAL,
+    group_note_factor1 REAL,
+    group_rating_status TEXT,
+    group_note_intercept_max REAL,
+    group_note_intercept_min REAL,
+    modeling_group TEXT,
+    num_ratings INTEGER,
+    timestamp_millis_of_current_status BIGINT,
+    expansion_plus_note_intercept REAL,
+    expansion_plus_note_factor1 REAL,
+    expansion_plus_rating_status TEXT,
+    topic_note_intercept REAL,
+    topic_note_factor1 REAL,
+    topic_rating_status TEXT,
+    note_topic TEXT,
+    topic_note_confident BOOLEAN,
+    expansion_active_rules TEXT,
+    expansion_plus_active_rules TEXT,
+    group_active_rules TEXT,
+    topic_active_rules TEXT
+);
+
+-- Helpfulness Scores Table
+CREATE TABLE helpfulness_scores (
+    rater_participant_id TEXT PRIMARY KEY,
+    core_rater_intercept REAL,
+    core_rater_factor1 REAL,
+    crh_crnh_ratio_difference REAL,
+    mean_note_score REAL,
+    rater_agree_ratio REAL,
+    successful_rating_helpful_count REAL,
+    successful_rating_not_helpful_count REAL,
+    successful_rating_total REAL,
+    unsuccessful_rating_helpful_count REAL,
+    unsuccessful_rating_not_helpful_count REAL,
+    unsuccessful_rating_total REAL,
+    ratings_awaiting_more_ratings REAL,
+    rated_after_decision REAL,
+    notes_currently_rated_helpful REAL,
+    notes_currently_rated_not_helpful REAL,
+    notes_awaiting_more_ratings REAL,
+    enrollment_state TEXT,
+    successful_rating_needed_to_earn_in REAL,
+    author_top_not_helpful_tag_values TEXT,
+    timestamp_of_last_state_change BIGINT,
+    above_helpfulness_threshold BOOLEAN,
+    is_emerging_writer BOOLEAN,
+    aggregate_rating_received_total REAL,
+    timestamp_of_last_earn_out BIGINT,
+    group_rater_intercept REAL,
+    group_rater_factor1 REAL,
+    modeling_group TEXT,
+    rater_helpfulness_reputation REAL,
+    number_of_times_earned_out REAL
+);
+
+
 DROP MATERIALIZED VIEW IF EXISTS notes_with_stats;
 
 CREATE MATERIALIZED VIEW notes_with_stats AS
@@ -91,12 +177,29 @@ SELECT
     n.tweet_id,
     n.summary,
     n.classification,
+    sn.final_rating_status AS final_rating_status,
+    sn.core_rating_status AS core_rating_status,
+    sn.expansion_rating_status AS expansion_rating_status,
+    sn.coverage_rating_status AS coverage_rating_status,
+    sn.group_rating_status AS group_rating_status,
+    sn.expansion_plus_rating_status AS expansion_plus_rating_status,
+    sn.topic_rating_status AS topic_rating_status,
+    sn.note_topic AS note_topic,
+    sn.topic_note_confident AS topic_note_confident,
+    sn.num_ratings AS scored_num_ratings,
+    sn.modeling_group AS modeling_group,
+    sn.created_at_millis AS scored_created_at_millis,
+    sn.decided_by AS decided_by,
+    sn.first_tag AS first_tag,
+    sn.second_tag AS second_tag,
     COUNT(r.note_id) AS ratings_count,
     COUNT(CASE WHEN r.helpfulness_level = 'HELPFUL' THEN 1 END) AS ratings_count_helpful,
     COUNT(CASE WHEN r.helpfulness_level = 'SOMEWHAT_HELPFUL' THEN 1 END) AS ratings_count_somewhat_helpful,
     COUNT(CASE WHEN r.helpfulness_level = 'NOT_HELPFUL' THEN 1 END) AS ratings_count_not_helpful
 FROM 
     notes n
+LEFT JOIN
+    scored_notes sn ON n.note_id = sn.note_id
 LEFT JOIN 
     ratings r ON n.note_id = r.note_id
 GROUP BY 
@@ -114,3 +217,7 @@ CREATE INDEX idx_notes_with_stats_classification ON notes_with_stats(classificat
 
 CREATE INDEX idx_ratings_rating_participant_id ON ratings(rating_participant_id);
 CREATE INDEX idx_notes_with_stats_note_author_participant_id ON notes_with_stats(note_author_participant_id);
+
+CREATE INDEX idx_notes_with_stats_tweet_id ON notes_with_stats(tweet_id);
+CREATE INDEX idx_notes_with_stats_topic_id ON notes_with_stats(note_topic);
+CREATE INDEX idx_notes_with_status_final_rating_status ON notes_with_stats(final_rating_status);

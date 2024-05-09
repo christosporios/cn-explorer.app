@@ -24,8 +24,25 @@ export async function lastRatingDate() {
   return new Date(lastDate);
 }
 
+export async function lastNoteDate() {
+  const result = await pool.query('SELECT MAX(created_at_millis) FROM notes_with_stats');
+  const lastDate = parseInt(result.rows[0].max);
+
+  return new Date(lastDate);
+}
+
 export async function countRatings() {
   const result = await pool.query('SELECT COUNT(*) FROM ratings');
+  return parseInt(result.rows[0].count);
+}
+
+export async function countNotes() {
+  const result = await pool.query('SELECT COUNT(*) FROM notes_with_stats');
+  return parseInt(result.rows[0].count);
+}
+
+export async function countUsers() {
+  const result = await pool.query('SELECT COUNT(*) FROM user_enrollment');
   return parseInt(result.rows[0].count);
 }
 

@@ -21,25 +21,26 @@ export type QueryResults = {
 };
 
 function extractTweetId(query: string): string | null {
-    const standaloneIdRegex = /^\d+$/;
-    const urlIdRegex = /^(?:https?:\/\/)?(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)$/;
-    const tweetPrefixRegex = /^tweet (\d+)$/i;
-  
-    if (standaloneIdRegex.test(query)) {
-      return query;
-    } else if (urlIdRegex.test(query)) {
-      const match = query.match(urlIdRegex);
-      return match ? match[1] : null;
-    } else if (tweetPrefixRegex.test(query)) {
-      const match = query.match(tweetPrefixRegex);
-      return match ? match[1] : null;
-    }
-  
-    return null;
+  const standaloneIdRegex = /^\d+$/;
+  const urlIdRegex = /^(?:https?:\/\/)?(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)$/;
+  const tweetPrefixRegex = /^tweet (\d+)$/i;
+
+  if (standaloneIdRegex.test(query)) {
+    return query;
+  } else if (urlIdRegex.test(query)) {
+    const match = query.match(urlIdRegex);
+    return match ? match[1] : null;
+  } else if (tweetPrefixRegex.test(query)) {
+    const match = query.match(tweetPrefixRegex);
+    return match ? match[1] : null;
   }
+
+  return null;
+}
 
 async function smartQuery(query: string): Promise<QueryResults> {
   try {
+
     var sqlQuery = await generateSqlQuery(query);
     console.log(`Generated SQL query: ${sqlQuery}`)
   } catch (e) {
@@ -82,22 +83,22 @@ async function smartQuery(query: string): Promise<QueryResults> {
   }
 }
 
-export async function runQuery(query: string) : Promise<QueryResults> {
-    query = query.trim();
-    const tweetId = extractTweetId(query);
+export async function runQuery(query: string): Promise<QueryResults> {
+  query = query.trim();
+  const tweetId = extractTweetId(query);
 
-    if (tweetId) {
-      return {
-          type: "notes-list",
-          tweetId,
-          notes: await notesForTweetId(tweetId)
-      }
-    } else if (query.length == 64 && /^[0-9A-F]+$/.test(query)) {
-      return {
-        type: "user",
-        userId: query
-      }
-    } else {
-      return smartQuery(query);
+  if (tweetId) {
+    return {
+      type: "notes-list",
+      tweetId,
+      notes: await notesForTweetId(tweetId)
     }
+  } else if (query.length == 64 && /^[0-9A-F]+$/.test(query)) {
+    return {
+      type: "user",
+      userId: query
+    }
+  } else {
+    return smartQuery(query);
+  }
 }

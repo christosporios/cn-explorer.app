@@ -1,7 +1,7 @@
 "use server";
 import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY || "" });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || "" });
 
 const dbDescription = `
         CREATE TABLE ratings (
@@ -39,7 +39,7 @@ const systemPrompt = `
 
     ${dbDescription}
 
-    You should always return up to ${maxRows} rows.
+    You should always return up to ${maxRows} rows. If the response is a chart, the x axis should be a column that starts with x_ (e.g. x_time or x_day) and the y axis should be a column that starts with y_ (e.g. y_count or y_sum).
     
     Here are a few examples of queries and your expected response:
 
@@ -82,6 +82,9 @@ const systemPrompt = `
     Query: Users with the greatest ratio of unhelpful to total ratings
     Response: SELECT rating_participant_id, COUNT(*) AS ratings_count, COUNT(CASE WHEN helpfulness_level = 'NOT_HELPFUL' THEN 1 END) AS ratings_count_not_helpful, COUNT(CASE WHEN helpfulness_level = 'NOT_HELPFUL' THEN 1 END)::float / COUNT(*) AS ratio FROM ratings GROUP BY rating_participant_id ORDER BY ratio DESC, ratings_count DESC LIMIT 25;
 
+    Query: Time chart of ratings submitted
+    Response: SELECT DATE_TRUNC('day', TO_TIMESTAMP(created_at_millis / 1000)) AT TIME ZONE 'UTC' AS x_day, COUNT(*) AS y_ratings_count FROM ratings GROUP BY day ORDER BY day;
+
     Respond only with the SQL query, and nothing else. The query must be in a single line, and not annotated as code, even if it is long. Do not start with a code block.
      Output Error: <some vague description> if the query doesn't make sense.
 `;
@@ -110,7 +113,7 @@ async function gpt({ systemPrompt, userPrompt }: { systemPrompt: string, userPro
     return response.choices[0].message.content;
 }
 
-export async function generateSqlQuery(textQuery : string) : Promise<string> {
+export async function generateSqlQuery(textQuery: string): Promise<string> {
     console.log(`Generating sql query for: ${textQuery}`)
     const response = await gpt({
         systemPrompt,

@@ -1,9 +1,10 @@
 "use client";
-import { Accordion, AccordionBody, AccordionHeader, Badge, Card, Divider, DonutChart, Title } from "@tremor/react";
+import { DonutChart } from "@tremor/react";
+import { Accordion, AccordionPanel, Box, Heading, Tag, Text } from "grommet";
 import { ErrorBoundary } from "react-error-boundary";
 import { Tweet } from "react-tweet";
 
-const formatCNClassification = (classification : string) => {
+const formatCNClassification = (classification: string) => {
     var text = classification;
     var color = "gray";
     switch (classification) {
@@ -17,22 +18,22 @@ const formatCNClassification = (classification : string) => {
             break;
     }
 
-    return <Badge color={color}>{text}</Badge>;
+    return <Tag background={color} value={text} as="span" size="small" />;
 }
 
-const formatDateTime = (millis : string) => {
+const formatDateTime = (millis: string) => {
     const text = new Date(parseInt(millis)).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     return <span className="italic">{text}</span>;
 }
 
-const formatUserId = (id : string) => {
+const formatUserId = (id: string) => {
     if (!id) {
         return "???";
     }
     return <a href={`/user/${id}`} className=" text-blue-700 hover:underline">{id.substring(0, 8) + '...'}</a>;
 }
 
-export default function Note({data} : {data: any }) {
+export default function Note({ data }: { data: any }) {
     const ratingData = [
         {
             "name": "Helpful",
@@ -48,7 +49,7 @@ export default function Note({data} : {data: any }) {
         }
     ];
 
-    const renderRating = (data : any) => {
+    const renderRating = (data: any) => {
         let color = "blue";
         if (data.helpfulness_level === "NOT_HELPFUL") {
             color = "red";
@@ -62,28 +63,35 @@ export default function Note({data} : {data: any }) {
     }
 
 
-    return <Card className="hover:cursor-pointer hover:bg-slate-50 mb-8 p-0 "> 
-        { data.helpfulness_level ? renderRating(data) : <></> }
-        <div className="flex flex-row h-fit p-4">
-            
-            <div className="basis-1/4 grow-0 shrink-0 relative">
-                <Title>Ratings</Title>
-                <DonutChart className="min-w-full" data={ratingData} index="name" category="ratings" colors={["green", "red", "blue"]}/>
-            </div>
-            <div className="basis-3/4 grow-0 shrink-1 relative">
-                <Title>Community Note</Title>
-                <p className="my-4">User {formatUserId(data.note_author_participant_id)} on {formatDateTime(data.created_at_millis)} thought the parent tweet was {formatCNClassification(data.classification)}</p>
-                <p className="text-sm break-all px-2 border-l-slate-700 border-l-2">{data.summary}</p>
-            <Divider />
+    return <Box direction="row" elevation="small" gap="medium" pad="medium">
+
+
+        <Box basis="1/4">
+            <Heading level="4">Ratings</Heading>
+            <DonutChart className="min-w-full" data={ratingData} index="name" category="ratings" colors={["green", "red", "blue"]} />
+        </Box>
+        <Box direction="column" basis="3/4">
+            <Heading level="4">Details</Heading>
+            <Text>
+                {data.helpfulness_level ? renderRating(data) : <></>}
+            </Text>
+            {formatCNClassification(data.classification)}
+            <Text>
+                By user {formatUserId(data.note_author_participant_id)} on {formatDateTime(data.created_at_millis)}
+            </Text>
+            <Box background="background-back" border pad="small" margin="small" className=" break-words">
+                <Text size="small" >
+                    {data.summary}
+                </Text>
+            </Box>
             <Accordion>
-                <AccordionHeader className="text-sm">Show parent tweet</AccordionHeader>
-                <AccordionBody>
+                <AccordionPanel label="Show parent tweet">
                     <ErrorBoundary fallback={<p>Failed to load tweet.</p>}>
                         <Tweet id={data.tweet_id} />
                     </ErrorBoundary>
-                </AccordionBody>
+
+                </AccordionPanel>
             </Accordion>
-            </div>
-        </div>
-    </Card>
+        </Box>
+    </Box>;
 }
