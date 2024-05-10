@@ -38,17 +38,22 @@ type Batch = {
 }[];
 
 
+// This is all extremely hacky and needs to go away
+// Instead, check the type of the column in the database and format the value accordingly
+const bigIntArrays = [
+    'created_at_millis',
+    'timestamp_millis_of_current_status',
+    'timestamp_of_last_state_change',
+    'timestamp_of_last_earn_out'
+];
+
 let formatValue = (value: string, sqlColumn: string) => {
-    if (value.endsWith(".0")) {
-        return value.slice(0, -2);
-    }
-    if (sqlColumn == "timestamp_millis_of_current_status"
-        || sqlColumn == "timestamp_of_last_state_change"
-        || sqlColumn == "timestamp_of_last_earn_out") {
-        let val = parseInt(value).toString();
-        if (val == "NaN") {
+    if (bigIntArrays.includes(sqlColumn)) {
+        let val = parseInt(value, 10);
+        if (isNaN(val)) {
             return null;
         }
+        return val;
     }
     if (value === "") {
         return null;
