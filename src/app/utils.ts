@@ -1,23 +1,7 @@
 'use server';
 import { lastRatingDate, lastNoteDate, countNotes, countRatings, countUsers } from './db';
-
-function rateLimiter<T>(func: () => T, limitInSeconds: number): () => T {
-    let lastRan: number | null = null;
-    let lastResult: T | null;
-
-    const limit = limitInSeconds * 1000; // Convert seconds to milliseconds
-
-    return function () {
-        const now = Date.now();
-
-        if (!lastRan || !lastResult || (now - lastRan) >= limit) {
-            lastRan = now;
-            lastResult = func();
-        }
-
-        return lastResult;
-    }
-}
+import Redis from 'ioredis';
+const redis = new Redis(process.env.REDIS_URL!);
 
 type DBStats = {
     lastRatingDate: Date,
@@ -27,14 +11,26 @@ type DBStats = {
     countUsers: number
 }
 
-const getStats = async (): Promise<DBStats> => {
-    return {
-        lastRatingDate: await lastRatingDate(),
-        lastNoteDate: await lastNoteDate(),
-        countNotes: await countNotes(),
-        countRatings: await countRatings(),
-        countUsers: await countUsers()
-    };
+const getStatsFromRedis = async (): Promise<DBStats> => {
+    const stats = await redis.get('stats');
+    if (stats) {
+        let res = JSON.parse(stats);
+        return {
+            lastRatingDate: new Date(res.lastRatingDate),
+            lastNoteDate: new Date(res.lastNoteDate),
+            countNotes: res.countNotes,
+            countRatings: res.countRatings,
+            countUsers: res.countUsers
+        }
+    } else {
+        return {
+            lastRatingDate: new Date(),
+            lastNoteDate: new Date(),
+            countNotes: 0,
+            countRatings: 0,
+            countUsers: 0
+        };
+    }
 }
 
 const formatNumber = (num: number): string => {
@@ -46,6 +42,5 @@ const formatNumber = (num: number): string => {
     }
 }
 
-const getStatsRL = rateLimiter(getStats, 300); // 5 mins caching
 
-export { getStatsRL, formatNumber };
+export { getStatsFromRedis, formatNumber };

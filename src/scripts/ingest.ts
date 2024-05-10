@@ -33,7 +33,7 @@ async function downloadFile(url: string, outputPath: string) {
 
 type Batch = {
     sqlColumns: string[];
-    sqlValues: (string | null)[];
+    sqlValues: (string | number | null)[];
     sqlUpdate: string[];
 }[];
 

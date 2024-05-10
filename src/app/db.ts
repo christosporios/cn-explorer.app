@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { format } from 'date-fns';
 import dotenv from 'dotenv';
 import { memoize } from 'lodash';
+dotenv.config();
 
 // Database Client
 const pool = new Pool({
@@ -66,7 +67,37 @@ export async function participant(participantId: string) {
   return result.rows[0];
 }
 
-export async function queryDatabase(query: string): Promise<any[]> {
+// Utility function to add timeout to a promise
+const withTimeout = <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
+  return new Promise<T>((resolve, reject) => {
+    const timeoutId = setTimeout(() => reject(new Error('Query timed out')), timeoutMs);
+
+    promise
+      .then((result) => {
+        clearTimeout(timeoutId);
+        resolve(result);
+      })
+      .catch((err) => {
+        clearTimeout(timeoutId);
+        reject(err);
+      });
+  });
+};
+
+let QUERY_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+async function _queryDatabase(query: string): Promise<any[]> {
+  const timeoutMs = QUERY_TIMEOUT
+
+  const queryWithTimeout = `
+    SET statement_timeout = ${timeoutMs};
+    ${query}
+  `;
+
+  await pool.query(`SET statement_timeout = ${timeoutMs}`);
   const result = await pool.query(query);
   return result.rows;
+}
+
+export const queryDatabase = async (query: string) => {
+  return withTimeout(_queryDatabase(query), QUERY_TIMEOUT);
 }

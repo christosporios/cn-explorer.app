@@ -199,12 +199,31 @@ SELECT
 FROM 
     notes n
 LEFT JOIN
-    scored_notes sn ON n.note_id = sn.note_id
+    scored_notes sn ON n.note_id = sn.note_id::bigint
 LEFT JOIN 
     ratings r ON n.note_id = r.note_id
 GROUP BY 
-    n.note_id;
-
+    n.note_id, 
+    n.note_author_participant_id, 
+    n.created_at_millis, 
+    n.tweet_id, 
+    n.summary, 
+    n.classification, 
+    sn.final_rating_status, 
+    sn.core_rating_status, 
+    sn.expansion_rating_status, 
+    sn.coverage_rating_status, 
+    sn.group_rating_status, 
+    sn.expansion_plus_rating_status, 
+    sn.topic_rating_status, 
+    sn.note_topic, 
+    sn.topic_note_confident, 
+    sn.num_ratings, 
+    sn.modeling_group, 
+    sn.created_at_millis, 
+    sn.decided_by, 
+    sn.first_tag, 
+    sn.second_tag;
 
 CREATE INDEX idx_ratings_note_id ON ratings(note_id);
 CREATE INDEX idx_notes_with_stats_note_id ON notes_with_stats(note_id);

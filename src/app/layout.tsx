@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { getStatsRL, formatNumber } from './utils'
+import { getStatsFromRedis, formatNumber } from './utils'
 import { Anchor, Box, Footer, Grommet, Header, Heading, Main, Text } from 'grommet';
 import { Analytics } from 'grommet-icons'
 import { DateTime } from '@/components/DateTime';
@@ -19,7 +19,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
 
-  const dbStats = await getStatsRL();
+  const dbStats = await getStatsFromRedis();
 
   return (
     <html lang="en">

@@ -74,20 +74,32 @@ function GenericChart({ data, cols }: { data: any[], cols: string[] }) {
         </Text>
     }
 
-
     const values = data.map((d) => d[y_cols[0]]);
     const { axis, bounds, pad, thickness } = calcs(values);
+    console.log(data);
+    console.log(x_cols);
 
-    return <DataChart
-        data={data}
-        series={y_cols}
-        guide={{
-            x: { granularity: 'fine' },
-            y: { granularity: 'fine' }
-        }}
-        legend
-        size={{
-            width: "full"
-        }}
-    />;
+    return <Box width="full" height="medium">
+        <DataChart
+            data={data}
+            series={y_cols}
+            axis={{
+                x: {
+                    property: x_cols[0],
+                    granularity: 'medium'
+                },
+                y: {
+                    property: y_cols[0],
+                    granularity: 'medium'
+                }
+
+            }}
+            guide={{
+                x: { granularity: 'medium' },
+                y: { granularity: 'medium' }
+            }}
+            legend
+            size="fill"
+        />
+    </Box>
 }
