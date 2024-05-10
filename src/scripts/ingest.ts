@@ -42,7 +42,9 @@ let formatValue = (value: string, sqlColumn: string) => {
     if (value.endsWith(".0")) {
         return value.slice(0, -2);
     }
-    if (sqlColumn == "timestamp_millis_of_current_status") {
+    if (sqlColumn == "timestamp_millis_of_current_status"
+        || sqlColumn == "timestamp_of_last_state_change"
+        || sqlColumn == "timestamp_of_last_earn_out") {
         return parseInt(value).toString();
     }
     if (value === "") {
