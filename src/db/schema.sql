@@ -240,3 +240,5 @@ CREATE INDEX idx_notes_with_stats_note_author_participant_id ON notes_with_stats
 CREATE INDEX idx_notes_with_stats_tweet_id ON notes_with_stats(tweet_id);
 CREATE INDEX idx_notes_with_stats_topic_id ON notes_with_stats(note_topic);
 CREATE INDEX idx_notes_with_status_final_rating_status ON notes_with_stats(final_rating_status);
+
+CREATE INDEX idx_ratings_participant_id_created_at_millis ON ratings (rating_participant_id, created_at_millis);

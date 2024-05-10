@@ -1,4 +1,5 @@
-import { Box, Data, DataSummary, DataTable, DataTableColumns, Tab, Tabs, Text, Toolbar, Chart, calcs, DataChart } from "grommet";
+import { Box, Data, DataSummary, DataTable, DataTableColumns, Tab, Tabs, Text, Toolbar, Chart, calcs, DataChart, Anchor } from "grommet";
+import { Tag } from "grommet";
 
 export default function GenericTable({ data }: { data: any[] }) {
     const cols: string[] = Object.keys(data[0]);
@@ -22,12 +23,24 @@ export default function GenericTable({ data }: { data: any[] }) {
         }
     }
 
+
+    const isUserID = (str: string): boolean => {
+        return str.length == 64 && /^[0-9A-F]+$/.test(str);
+    }
+
     let getColumnDefinition = (key: string) => {
         return {
             property: key,
             header: <Text>{getColumnFriendlyName(key)}</Text>,
             render: (datum: any) => {
-                return datum[key] instanceof Date ? datum[key].toLocaleDateString() : datum[key] || "N/A";
+                let val = datum[key];
+                if (val instanceof Date) {
+                    return datum[key].toLocaleDateString();
+                }
+                if (isUserID(val)) {
+                    return <UserLink id={val} />;
+                }
+                return val;
             },
             sortable: true,
             search: true,
@@ -102,4 +115,10 @@ function GenericChart({ data, cols }: { data: any[], cols: string[] }) {
             size="fill"
         />
     </Box>
+}
+
+function UserLink({ id }: { id: string }) {
+    return <Anchor href={`/?q=${id}`}>
+        <Tag value={`User ${id}`} size="small" />
+    </Anchor>;
 }

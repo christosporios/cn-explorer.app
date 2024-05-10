@@ -104,7 +104,7 @@ function QueryStatus({ initialStatus }: { initialStatus: QueryStatus }) {
           }
 
           (async () => {
-            const newStatus = await runQuery(prevStatus.query);
+            const newStatus = await runQuery(prevStatus.query!);
             setStatus(newStatus);
 
             if (newStatus.status === "done" || newStatus.status === "error") {

@@ -58,7 +58,9 @@ export async function notesForParticipantOffset(participantId: string, offset: n
 }
 
 export async function ratingsForParticipantOffset(participantId: string, offset: number) {
+  console.log('Getting ratings for participant', participantId, 'offset', offset);
   const result = await pool.query('SELECT n.*, r.*, r.created_at_millis AS rating_created_at_millis FROM ratings r LEFT JOIN notes_with_stats n ON r.note_id = n.note_id WHERE rating_participant_id = $1 ORDER BY r.created_at_millis DESC LIMIT 10 OFFSET $2', [participantId, offset]);
+  console.log('Done');
   return result.rows;
 }
 
