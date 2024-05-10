@@ -33,16 +33,16 @@ async function downloadFile(url: string, outputPath: string) {
 
 type Batch = {
     sqlColumns: string[];
-    sqlValues: string[];
+    sqlValues: (string | null)[];
     sqlUpdate: string[];
 }[];
 
 
-let formatValue = (value: string, tsvColumn: string) => {
+let formatValue = (value: string, sqlColumn: string) => {
     if (value.endsWith(".0")) {
         return value.slice(0, -2);
     }
-    if (tsvColumn == "timestamp_millis_of_current_status") {
+    if (sqlColumn == "timestamp_millis_of_current_status") {
         return parseInt(value).toString();
     }
     if (value === "") {
@@ -85,7 +85,7 @@ async function processFile(filePath: string, tableName: string, fromDate: Date, 
         for (const [tsvColumn, sqlColumn] of Object.entries(columnMappings)) {
             if (row[tsvColumn] !== undefined) {
                 sqlColumns.push(sqlColumn);
-                sqlValues.push(formatValue(row[tsvColumn], tsvColumn));
+                sqlValues.push(formatValue(row[tsvColumn], sqlColumn));
                 sqlUpdate.push(`${sqlColumn} = EXCLUDED.${sqlColumn}`);
             }
         }
