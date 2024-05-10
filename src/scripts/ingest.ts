@@ -38,9 +38,12 @@ type Batch = {
 }[];
 
 
-let formatValue = (value: string) => {
+let formatValue = (value: string, tsvColumn: string) => {
     if (value.endsWith(".0")) {
         return value.slice(0, -2);
+    }
+    if (tsvColumn = "timestamp_millis_of_current_status") {
+        return parseInt(value).toString();
     }
     if (value === "") {
         return null;
@@ -82,7 +85,7 @@ async function processFile(filePath: string, tableName: string, fromDate: Date, 
         for (const [tsvColumn, sqlColumn] of Object.entries(columnMappings)) {
             if (row[tsvColumn] !== undefined) {
                 sqlColumns.push(sqlColumn);
-                sqlValues.push(formatValue(row[tsvColumn]));
+                sqlValues.push(formatValue(row[tsvColumn], tsvColumn));
                 sqlUpdate.push(`${sqlColumn} = EXCLUDED.${sqlColumn}`);
             }
         }
@@ -380,7 +383,7 @@ const files = [
         table: 'ratings',
         keys: ['note_id', 'rating_participant_id'],
         columnMappings: ratingsColumnMappings
-    },*/
+    },
     {
         url: baseUrl + 'noteStatusHistory-00000.tsv',
         table: 'note_status',
@@ -392,7 +395,7 @@ const files = [
         table: 'user_enrollment',
         keys: ['participant_id'],
         columnMappings: userEnrollmentColumnMappings
-    },
+    },*/
     {
         url: baseUrl + 'scored_notes.tsv',
         table: 'scored_notes',
