@@ -20,13 +20,13 @@ SELECT
     tweet_id, -- The tweet ID that this note is about (a string of digits)
     summary, -- The text of the community note
     classification, -- Whether this note is adding context to the tweet, or explaining why it's not needed. One of NOT_MISLEADING or MISINFORMED_OR_POTENTIALLY_MISLEADING
-    final_rating_status, -- The final rating status of the note
-    core_rating_status, -- The core rating status of the note
-    expansion_rating_status, -- The expansion rating status of the note
-    coverage_rating_status, -- The coverage rating status of the note
-    group_rating_status, -- The group rating status of the note
-    expansion_plus_rating_status, -- The expansion plus rating status of the note
-    topic_rating_status, -- The topic rating status of the note
+    final_rating_status, -- The final rating status of the note (one of CURRENTLY_RATED_NOT_HELPFUL, CURRENTLY_RATED_HELPFUL, NEEDS_MORE_RATINGS)
+    core_rating_status, -- The core rating status of the note (same values as final_rating_status)
+    expansion_rating_status, -- The expansion rating status of the note (same values as final_rating_status)
+    coverage_rating_status, -- The coverage rating status of the note (same values as final_rating_status)
+    group_rating_status, -- The group rating status of the note (same values as final_rating_status)
+    expansion_plus_rating_status, -- The expansion plus rating status of the note (same values as final_rating_status)
+    topic_rating_status, -- The topic rating status of the note (same values as final_rating_status)
     note_topic, -- The topic of the note
     topic_note_confident, -- Indicates if the topic note is confident
     num_ratings AS scored_num_ratings, -- The number of ratings the note has received
@@ -105,6 +105,7 @@ const systemPrompt = `
     Response: SELECT DATE_TRUNC('month', TO_TIMESTAMP(created_at_millis / 1000)) AT TIME ZONE 'UTC' AS x_month, COUNT(CASE WHEN note_topic = 'GazaConflict' THEN 1 END) AS y_GazaConflict_count, COUNT(CASE WHEN note_topic = 'UkraineConflict' THEN 1 END) AS y_UkraineConflict_count FROM  notes_with_stats WHERE  note_topic IN ('GazaConflict', 'UkraineConflict') GROUP BY  x_month ORDER BY  x_month;
 
     Respond only with the SQL query, and nothing else. The query must be in a single line, and not annotated as code, even if it is long. Do not start with a code block.
+    Note statuses are one of "NEEDS_MORE_RATINGS", "CURRENTLY_RATED_HELPFUL", "CURRENTLY_RATED_NOT_HELPFUL".
      Output Error: <some vague description> if the query doesn't make sense.
 `;
 
