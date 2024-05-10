@@ -42,7 +42,7 @@ let formatValue = (value: string, tsvColumn: string) => {
     if (value.endsWith(".0")) {
         return value.slice(0, -2);
     }
-    if (tsvColumn = "timestamp_millis_of_current_status") {
+    if (tsvColumn == "timestamp_millis_of_current_status") {
         return parseInt(value).toString();
     }
     if (value === "") {
