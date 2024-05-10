@@ -45,7 +45,10 @@ let formatValue = (value: string, sqlColumn: string) => {
     if (sqlColumn == "timestamp_millis_of_current_status"
         || sqlColumn == "timestamp_of_last_state_change"
         || sqlColumn == "timestamp_of_last_earn_out") {
-        return parseInt(value).toString();
+        let val = parseInt(value).toString();
+        if (val == "NaN") {
+            return null;
+        }
     }
     if (value === "") {
         return null;
