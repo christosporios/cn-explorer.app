@@ -42,6 +42,9 @@ let formatValue = (value: string) => {
     if (value.endsWith(".0")) {
         return value.slice(0, -2);
     }
+    if (value === "") {
+        return null;
+    }
     return value;
 }
 
