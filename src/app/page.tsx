@@ -88,27 +88,37 @@ function StatusOrExamples({ loading, queryStatus, onExampleClick }:
 }
 
 function QueryStatus({ initialStatus }: { initialStatus: QueryStatus }) {
-  let [isPolling, setIsPolling] = useState(false);
-  let [status, setStatus] = useState<QueryStatus | null>(null);
+  const [isPolling, setIsPolling] = useState(false);
+  const [status, setStatus] = useState<QueryStatus>(initialStatus);
 
   useEffect(() => {
-    setStatus(initialStatus);
     if (initialStatus.status !== "done" && initialStatus.status !== "error") {
       setIsPolling(true);
-      console.log("Starting polling")
+      console.log("Starting polling");
+
       const poll = async () => {
-        if (!status || !status.query) {
-          console.log("No query to poll for");
-          return;
-        }
-        const newStatus = await runQuery(status?.query!);
-        setStatus(newStatus);
-        if (newStatus.status === "done" || newStatus.status === "error") {
-          setIsPolling(false);
-          clearInterval(interval);
-        }
+        setStatus((prevStatus) => {
+          if (!prevStatus || !prevStatus.query) {
+            console.log("No query to poll for");
+            return prevStatus;
+          }
+
+          (async () => {
+            const newStatus = await runQuery(prevStatus.query);
+            setStatus(newStatus);
+
+            if (newStatus.status === "done" || newStatus.status === "error") {
+              setIsPolling(false);
+              clearInterval(interval);
+            }
+          })();
+
+          return prevStatus;
+        });
       };
+
       const interval = setInterval(poll, 3000);
+
       return () => {
         clearInterval(interval);
         setIsPolling(false);
@@ -141,9 +151,9 @@ function SqlQuery({ sqlQuery }: { sqlQuery?: string }) {
     return <Text color="text-weak">SQL not available</Text>
   }
 
-  return <Tip content={
-    <Box background='background-contrast' border pad='small'>
-      <Text>{sqlQuery}</Text>
+  return <Tip plain content={
+    <Box background='background-back' border pad='small' width='medium'>
+      <Text className=' font-mono'>{sqlQuery}</Text>
     </Box>
   }>
     <Anchor>SQL</Anchor>

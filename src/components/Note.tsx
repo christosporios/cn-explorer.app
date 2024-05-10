@@ -1,6 +1,6 @@
 "use client";
 import { DonutChart } from "@tremor/react";
-import { Accordion, AccordionPanel, Box, Heading, Tag, Text } from "grommet";
+import { Accordion, AccordionPanel, Box, DataTable, Heading, Table, TableBody, TableCell, TableRow, Tag, Text } from "grommet";
 import { ErrorBoundary } from "react-error-boundary";
 import { Tweet } from "react-tweet";
 
@@ -68,6 +68,7 @@ export default function Note({ data }: { data: any }) {
 
         <Box basis="1/4">
             <Heading level="4">Ratings</Heading>
+            <Tag value={data.final_rating_status} size="small" />
             <DonutChart className="min-w-full" data={ratingData} index="name" category="ratings" colors={["green", "red", "blue"]} />
         </Box>
         <Box direction="column" basis="3/4">
@@ -89,6 +90,25 @@ export default function Note({ data }: { data: any }) {
                     <ErrorBoundary fallback={<p>Failed to load tweet.</p>}>
                         <Tweet id={data.tweet_id} />
                     </ErrorBoundary>
+                </AccordionPanel>
+                <AccordionPanel label="Show all properties">
+                    <Table>
+                        <TableBody>
+                            {Object.keys(data).map((key, ind) => {
+                                return <TableRow key={`prop-${ind}`}>
+                                    <TableCell><Text weight="bolder">{key}</Text></TableCell>
+                                    <TableCell >
+                                        <Box width="medium">
+                                            <pre className='font-mono break-words whitespace-pre-wrap'>
+                                                {data[key]}
+                                            </pre>
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>;
+                            })
+                            }
+                        </TableBody>
+                    </Table>
 
                 </AccordionPanel>
             </Accordion>

@@ -81,13 +81,25 @@ const processQuery = async (key: string, status: QueryStatus) => {
         // Generate SQL query
         redis.set(key, JSON.stringify({ ...status, status: "generating-sql" }));
         let start = Date.now();
-        let sqlQuery = await generateSqlQuery(status.query!);
+        try {
+            var sqlQuery = await generateSqlQuery(status.query!);
+        } catch (e) {
+            console.log(e);
+            redis.set(key, JSON.stringify({ ...status, status: "error", error: "Could not generate SQL for this query" }));
+            return;
+        }
         let generationTime = Date.now() - start;
 
         // Execute SQL query
         redis.set(key, JSON.stringify({ ...status, status: "executing", sqlQuery, times: { generation: generationTime, execution: 0 } }));
         start = Date.now();
-        let results = await executeQuery(sqlQuery);
+        try {
+            var results = await executeQuery(sqlQuery);
+        } catch (e) {
+            console.log(e);
+            redis.set(key, JSON.stringify({ ...status, status: "error", sqlQuery, error: "Could not execute query" }));
+            return;
+        }
         console.log('Results:', results)
         let executionTime = Date.now() - start;
         redis.set(key, JSON.stringify({ ...status, status: "done", sqlQuery, results, times: { generation: generationTime, execution: executionTime } }));

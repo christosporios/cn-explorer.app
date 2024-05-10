@@ -24,6 +24,7 @@ export default function Examples(props: ExamplesProps) {
         { query: "Time chart of ratings submitted", description: "Shows a time chart of community note ratings submitted", icon: ChartBarIcon },
         { query: "Most recent notes", description: "Shows a table of the most recently submitted community notes", icon: TableIcon },
         { query: "Users with the most ratings in the last 30 days", description: "Shows a table of the user with the most community note ratings in the last 30 days", icon: TableIcon },
+        { query: "Note counts per note topics ", description: "Shows how many notes were determined to be in each topic group", icon: TableIcon },
     ];
 
     return <Box direction="column" width="full">
