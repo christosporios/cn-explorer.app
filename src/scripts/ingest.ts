@@ -37,6 +37,14 @@ type Batch = {
     sqlUpdate: string[];
 }[];
 
+
+let formatValue = (value: string) => {
+    if (value.endsWith(".0")) {
+        return value.slice(0, -2);
+    }
+    return value;
+}
+
 async function processFile(filePath: string, tableName: string, fromDate: Date, toDate: Date, columnMappings: Record<string, string>, keys: string[]) {
 
     const fileStream = fs.createReadStream(filePath);
@@ -71,7 +79,7 @@ async function processFile(filePath: string, tableName: string, fromDate: Date, 
         for (const [tsvColumn, sqlColumn] of Object.entries(columnMappings)) {
             if (row[tsvColumn] !== undefined) {
                 sqlColumns.push(sqlColumn);
-                sqlValues.push(row[tsvColumn]);
+                sqlValues.push(formatValue(row[tsvColumn]));
                 sqlUpdate.push(`${sqlColumn} = EXCLUDED.${sqlColumn}`);
             }
         }
@@ -315,6 +323,7 @@ const formattedDate = format(currentDate, 'yyyy/MM/dd');
 const baseUrl = `http://runner.cn-explorer.app/files/`;
 
 const files = [
+    /*
     {
         url: baseUrl + 'notes-00000.tsv',
         table: 'notes',
@@ -368,7 +377,7 @@ const files = [
         table: 'ratings',
         keys: ['note_id', 'rating_participant_id'],
         columnMappings: ratingsColumnMappings
-    },
+    },*/
     {
         url: baseUrl + 'noteStatusHistory-00000.tsv',
         table: 'note_status',
